@@ -1,5 +1,3 @@
-
-
 class TextNode():
     def __init__(self, text, text_type, url=None):
         self.text = text
