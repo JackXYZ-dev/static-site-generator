@@ -1,6 +1,6 @@
 import unittest
 import re
-from block_markdown import markdown_to_blocks
+from block_markdown import markdown_to_blocks, block_to_block_type
 
 
 class TestMarkdownToBlocks(unittest.TestCase):
@@ -36,6 +36,46 @@ class TestMarkdownToBlocks(unittest.TestCase):
         markdown = "This is a block.\n\n\nThis is another block."
         expected = ["This is a block.", "This is another block."]
         self.assertEqual(markdown_to_blocks(markdown), expected)
+
+    def test_heading(self):
+        block = "# Heading"
+        self.assertEqual(block_to_block_type(block), "heading")
+
+    def test_code_block(self):
+        block = "```\ncode\n```"
+        self.assertEqual(block_to_block_type(block), "code")
+
+    def test_quote_block(self):
+        block = "> Quote"
+        self.assertEqual(block_to_block_type(block), "quote")
+
+    def test_unordered_list(self):
+        block = "- Item 1\n- Item 2"
+        self.assertEqual(block_to_block_type(block), "unordered_list")
+
+    def test_ordered_list(self):
+        block = "1. Item 1\n2. Item 2"
+        self.assertEqual(block_to_block_type(block), "ordered_list")
+
+    def test_invalid_ordered_list(self):
+        block = "1. Item 1\n3. Item 2"
+        self.assertEqual(block_to_block_type(block), "paragraph")
+
+    def test_normal_paragraph(self):
+        block = "This is a normal paragraph."
+        self.assertEqual(block_to_block_type(block), "paragraph")
+
+    def test_empty_string(self):
+        block = ""
+        self.assertEqual(block_to_block_type(block), "paragraph")
+
+    def test_multiple_lines(self):
+        block = "# Heading\n## Subheading\n### Subsubheading"
+        self.assertEqual(block_to_block_type(block), "heading")
+
+    def test_code_block_multiple_lines(self):
+        block = "```\ncode\nline 1\ncode\nline 2\n```"
+        self.assertEqual(block_to_block_type(block), "code")
 
 
 if __name__ == "__main__":
